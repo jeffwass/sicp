@@ -1,0 +1,20 @@
+#lang planet neil/sicp
+(define (fast-mult a b)
+  (cond ((= b 0) 0)
+        ((even? b) (double (fast-mult a (halve b))))
+        (else (+ a (fast-mult a (- b 1))))))
+(define (double a) (+ a a))
+(define (halve a) (/ a 2))
+
+;(fast-mult 3 7)
+;(3 + (fast-mult 3 6))
+;(3 + 2 * (fast-mult 3 3))
+;(3 + 2 * (3 + (fast-mult 3 2)))
+;(3 + 2 * (3 + 2 * (fast-mult 3 1)))
+;(3 + 2 * (3 + 2 * (3 + (fast-mult 3 0))))
+;(3 + 2 * (3 + 2 * (3 + 0)))
+;(3 + 2 * (3 + 2 * 3))
+;(3 + 2 * (3 + 6))
+;(3 + 2 * 9)
+;(3 + 18)
+;21
