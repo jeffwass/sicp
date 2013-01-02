@@ -1,0 +1,26 @@
+#lang planet neil/sicp
+
+(define (fermat-test n a)
+      (= (expmod a n n) a))
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m)) m))
+        (else (remainder (* base (expmod base (- exp 1) m)) m))))
+(define (square x) (* x x))
+(define (test-carmichael n)
+  (test-carmichael-iter n 2))
+(define (test-carmichael-iter n a)
+  (cond ((= a n) true)
+        ((not (fermat-test n a)) false)
+        (else (test-carmichael-iter n (+ 1 a)))))
+
+; All below give True except the final non-Carmichael non-prime
+(test-carmichael 561)
+(test-carmichael 1105)
+(test-carmichael 1729)
+(test-carmichael 2465)
+(test-carmichael 2821)
+(test-carmichael 6601)
+(test-carmichael 17)
+(test-carmichael 18)
