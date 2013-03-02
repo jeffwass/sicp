@@ -47,17 +47,19 @@
   (map (lambda (row) (display row) (newline)) position)
   (newline))
 
-; New position is always first for easy retrieval
+; New position is always first, for easy retrieval in the safe? procedure
 (define (adjoin-position new-row k rest-of-queens)
   (append (list (list new-row k)) rest-of-queens))
 
+; Ensure the k'th position is not in an existing row or diagonal.  By definition, cannot be in an existing column
 (define (safe? k positions)
-  (define ret (cond
-                ((contains? (map (lambda (pos) (car pos)) (cdr positions)) (caar positions)) 1)
-                ((contains? (map (lambda (pos) (+ (car pos) (cadr pos))) (cdr positions)) (+ (caar positions) k)) 2)
-                ((contains? (map (lambda (pos) (- (car pos) (cadr pos))) (cdr positions)) (- (caar positions) k)) 3)
-                (else 0)))
-  (if (= ret 0) true false))
+  (let ((i (caar positions)) ; row of the position in column k
+        (rest (cdr positions)))  ; rest of positions (ie, all positions not in column k)
+    (cond
+      ((contains? (map (lambda (pos) (car pos) ) (cdr positions)) i) false) ; no existing queen in the i'th row
+      ((contains? (map (lambda (pos) (+ (car pos) (cadr pos))) rest) (+ i k)) false) ; no existing queen in the i'th diagonal (like slash /)
+      ((contains? (map (lambda (pos) (- (car pos) (cadr pos))) rest) (- i k)) false) ; no existing queen in the inverse i'th diagonal (like backslash \)
+      (else true))))
 
 (define (contains? the-list el)
   (cond ((null? the-list) false)
@@ -66,6 +68,6 @@
 
 (define eight-queens (queens 8))
 (display "Number of solutions for 8 queens: ")(length eight-queens)(newline)
-(display "(row/col) pairs for one solutions: ")(newline)
+(display "(row/col) pairs for one solution: ")(newline)
 (print-position (car eight-queens))
 ;(print-positions eight-queens)
